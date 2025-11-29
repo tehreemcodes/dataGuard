@@ -1,0 +1,6 @@
+id,full_name,email,phone,cnic,address,date_of_birth,salary,medical_condition
+1,Ali Raza,ali.raza@example.com,0301-1234567,35201-1234567-1,"Street 12, Lahore",1995-07-12,85000,Diabetes
+2,Sara Khan,sara.khan@example.com,0332-9876543,42301-9876543-2,"Block A, Karachi",1998-02-22,92000,Hypertension
+3,Ahmed Malik,ahmed.malik@example.com,0345-1122334,61101-1122334-3,"F-10, Islamabad",1990-11-05,120000,Asthma
+4,Hina Tariq,hina.tariq@example.com,0307-6655443,37405-6655443-4,"Gulshan, Karachi",1997-09-29,75000,Migraine
+5,Usman Ali,usman.ali@example.com,0312-5566778,35202-5566778-5,"DHA, Lahore",1988-03-18,150000,Heart Disease
