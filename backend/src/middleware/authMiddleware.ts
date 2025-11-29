@@ -5,7 +5,7 @@ import User from "../models/User";
 
 const JWT_SECRET = process.env.JWT_SECRET || "replace_this_in_env";
 
-export type ReqWithUser = Request & { user?: { userId: string; role?: string; email?: string } };
+export type ReqWithUser = Request & { user?: { userId: string; role?: string; email?: string; status?: string; } };
 
 export const requireAuth = async (req: ReqWithUser, res: Response, next: NextFunction) => {
   try {
@@ -19,7 +19,7 @@ export const requireAuth = async (req: ReqWithUser, res: Response, next: NextFun
     const user = await User.findById(decoded.userId).select("role email name");
     if (!user) return res.status(401).json({ message: "User not found" });
 
-    req.user = { userId: user._id.toString(), role: user.role, email: user.email };
+    req.user = { userId: user._id.toString(), role: user.role, email: user.email, status: user.status };
     next();
   } catch (err) {
     console.error("Auth error:", err);

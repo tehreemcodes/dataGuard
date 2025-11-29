@@ -14,13 +14,16 @@ import UploadDataset from "./src/pages/UploadDataset";
 import ClassifyDataset from "./src/pages/ClassifyDataset";
 import CreatePolicy from "./src/pages/CreatePolicy";
 import RunJob from "./src/pages/RunJob";
-
 import ProtectedRoute from "./src/components/ProtectedRoutes";
+import AdminUsers from "./src/pages/AdminUsers";
+import { AuthProvider } from "./src/context/AuthContext";
+import AuditLogs from "./src/pages/AuditLogs";
 
 const App: React.FC = () => {
   return (
     <Theme appearance="inherit" radius="large" scaling="100%">
       <Router>
+        <AuthProvider>
         <main className="min-h-screen font-inter">
 
           <Routes>
@@ -76,6 +79,15 @@ const App: React.FC = () => {
               }
             />
 
+            <Route path="/users" element={<ProtectedRoute roles={["admin"]}>
+              <AdminUsers />
+              </ProtectedRoute>} />
+            <Route path="/audit" element={<ProtectedRoute roles={["admin", "compliance"]}>
+              <AuditLogs />
+              </ProtectedRoute>
+            }/>
+
+
             {/* Future Expansion: Uncomment when ready
             <Route
               path="/policies"
@@ -114,7 +126,9 @@ const App: React.FC = () => {
             pauseOnHover
           />
         </main>
+        </AuthProvider>
       </Router>
+      
     </Theme>
   );
 };

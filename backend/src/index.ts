@@ -10,6 +10,9 @@ import datasetRoutes from "./routes/datasetRoutes";
 import classificationRoutes from "./routes/classificationRoutes";
 import policyRoutes from "./routes/policyRoutes";
 import jobRoutes from "./routes/jobRoutes";
+import adminRoutes from "./routes/adminRoutes";
+import auditRoutes from "./routes/auditRoutes";
+import statsRoutes from "./routes/statsRoutes";
 
 const app = express();
 
@@ -27,6 +30,9 @@ app.use("/api/datasets", datasetRoutes);
 app.use("/api/classification", classificationRoutes);
 app.use("/api/policies", policyRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/audit", auditRoutes);
+app.use("/api/stats", statsRoutes);
 
 
 

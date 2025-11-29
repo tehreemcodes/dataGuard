@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from "axios";
 import logo from '../assets/logo2.png';
+import { useAuth } from "../context/AuthContext";   // ← added
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -15,23 +16,24 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
-  const navigate = useNavigate(); // 🔥 FIXED navigate reference
-
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-  });
+  const { login } = useAuth();                      // ← use login() from context
+  const { register, handleSubmit, formState: { errors } } =
+    useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = async (data: LoginForm) => {
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", data);
 
-      // Save token & role
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
+      // Get token / role / name from backend
+      const token = res.data.token;
+      const role = res.data.role;
+      const name = res.data.name || res.data.email || "User";
+
+      // Calling global login()
+      login(token, role, name);
 
       alert("Login successful!");
 
-      navigate("/dashboard");
     } catch (err: any) {
       console.error(err);
       alert("Login failed: " + (err.response?.data?.message || "Unknown error"));
@@ -43,7 +45,7 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           <div className="text-center mb-8">
-            <img src={logo} alt="DataGuard Logo" className="h-16 w-auto object-contain items-center mx-auto" />
+            <img src={logo} alt="DataGuard Logo" className="h-16 w-auto object-contain mx-auto" />
             <h1 className="text-3xl font-bold py-2 text-slate-900 mb-2">Welcome Back</h1>
             <p className="text-slate-600">Sign in to your DataGuard account</p>
           </div>

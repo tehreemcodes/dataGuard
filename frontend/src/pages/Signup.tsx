@@ -27,7 +27,7 @@ const SignUp: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       await axios.post("http://localhost:5000/api/auth/signup", data);
-      alert("Signup successful!");
+      alert("Signup successful. Your account is pending admin approval. You will receive an email when approved.");
       navigate("/login");
     } catch (err: any) {
       alert("Signup failed: " + err.response?.data?.message);
