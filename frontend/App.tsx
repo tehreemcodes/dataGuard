@@ -21,6 +21,7 @@ import AuditLogs from "./src/pages/AuditLogs";
 import PoliciesList from "./src/pages/PoliciesList";
 import PolicyDetails from "./src/pages/PolicyDetails";
 import JobDetails from "./src/pages/JobDetails";
+import PrivacyUtility from "./src/pages/PrivacyUtility";
 
 const App: React.FC = () => {
   return (
@@ -113,6 +114,15 @@ const App: React.FC = () => {
   element={
     <ProtectedRoute roles={["admin", "analyst", "compliance"]}>
       <JobDetails />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/privacy"
+  element={
+    <ProtectedRoute roles={["admin", "analyst"]}>
+      <PrivacyUtility />
     </ProtectedRoute>
   }
 />

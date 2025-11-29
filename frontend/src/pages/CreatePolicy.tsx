@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -170,6 +170,12 @@ const CreatePolicy: React.FC = () => {
             <button className="px-4 py-2 bg-emerald-600 text-white rounded" onClick={onSave}>Save Policy</button>
             <button className="px-4 py-2 bg-gray-200 rounded" onClick={()=>navigate("/dashboard")}>Cancel</button>
           </div>
+          <div className="flex space-x-3">
+          <Link to="/privacy" className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Adjust Privacy–Utility
+          </Link>
+          </div>
+
 
           {/* Version history (if editing) */}
           {policyId && (
