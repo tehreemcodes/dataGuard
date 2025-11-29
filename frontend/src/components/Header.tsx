@@ -32,6 +32,9 @@ const Header: React.FC = () => {
               {(role === "admin" || role === "compliance") && (
                 <Link to="/audit" className="text-slate-600 hover:text-slate-900">Audit Logs</Link>
               )}
+              {(role === "admin" || role === "compliance") && (
+                <Link to="/reports" className="text-slate-600 hover:text-slate-900">Reports</Link>
+              )}
               {role === "admin" && (
                 <Link to="/users" className="text-slate-600 hover:text-slate-900">Users</Link>
               )}

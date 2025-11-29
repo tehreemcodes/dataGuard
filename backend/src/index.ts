@@ -14,6 +14,7 @@ import adminRoutes from "./routes/adminRoutes";
 import auditRoutes from "./routes/auditRoutes";
 import statsRoutes from "./routes/statsRoutes";
 import privacyRoutes from "./routes/privacyRoutes";
+import reportRoutes from "./routes/reportRoutes";
 
 const app = express();
 
@@ -35,7 +36,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/audit", auditRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/privacy", privacyRoutes);
-
+app.use("/api/reports", reportRoutes);
 
 
 // start server
