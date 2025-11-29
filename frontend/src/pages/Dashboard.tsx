@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -193,7 +194,11 @@ const Dashboard: React.FC = () => {
                 <tbody>
                   {stats.recentJobs.map((j: any) => (
                     <tr key={j._id} className="border-t">
-                      <td className="py-2 px-3">{j._id}</td>
+                      <td className="py-2 px-3">
+                        <Link to={`/job/${j._id}`} className="text-cyan-600 underline">
+                          {j._id}
+                        </Link>
+                      </td>
                       <td className="py-2 px-3">{j.datasetId}</td>
                       <td className="py-2 px-3">{j.createdBy || "-"}</td>
                       <td className="py-2 px-3">

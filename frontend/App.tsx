@@ -18,6 +18,9 @@ import ProtectedRoute from "./src/components/ProtectedRoutes";
 import AdminUsers from "./src/pages/AdminUsers";
 import { AuthProvider } from "./src/context/AuthContext";
 import AuditLogs from "./src/pages/AuditLogs";
+import PoliciesList from "./src/pages/PoliciesList";
+import PolicyDetails from "./src/pages/PolicyDetails";
+import JobDetails from "./src/pages/JobDetails";
 
 const App: React.FC = () => {
   return (
@@ -86,6 +89,34 @@ const App: React.FC = () => {
               <AuditLogs />
               </ProtectedRoute>
             }/>
+
+            <Route
+  path="/policies"
+  element={
+    <ProtectedRoute roles={["admin", "analyst"]}>
+      <PoliciesList />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/policy/:id"
+  element={
+    <ProtectedRoute roles={["admin", "analyst"]}>
+      <PolicyDetails />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/job/:id"
+  element={
+    <ProtectedRoute roles={["admin", "analyst", "compliance"]}>
+      <JobDetails />
+    </ProtectedRoute>
+  }
+/>
+
 
 
             {/* Future Expansion: Uncomment when ready
