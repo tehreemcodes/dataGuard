@@ -6,6 +6,8 @@ import Dataset from "../models/Dataset";
 import path from "path";
 import fs from "fs";
 import csv from "csv-parser";
+import { logAudit } from "../utils/audit";
+import { ReqWithUser } from "../middleware/authMiddleware";
 import { decryptToTemp, encryptFile, deleteFileSafe } from "../utils/encryption";
 import {
   pseudonymizeValue,

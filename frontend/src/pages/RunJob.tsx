@@ -5,24 +5,38 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
 const RunJob: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: datasetId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [jobId, setJobId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [preview, setPreview] = useState<any[]>([]);
   const [message, setMessage] = useState<string>("");
   const [downloading, setDownloading] = useState(false);
-  const jobStartedRef = useRef(false);
 
+  const jobStartedRef = useRef(false);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+  // ⭐ Get policyId from query params
+  const policyId = new URLSearchParams(window.location.search).get("policy");
+
   useEffect(() => {
+    if (!policyId) {
+      setMessage("Missing policy ID in URL");
+      setStatus("failed");
+      return;
+    }
+
     if (jobStartedRef.current) return;
     jobStartedRef.current = true;
 
     const startJob = async () => {
       try {
-        const res = await axios.post(`${API_URL}/api/jobs`, { policyId: id }, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } });
+        const res = await axios.post(
+          `${API_URL}/api/jobs`,
+          { datasetId, policyId },
+          { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
+        );
+
         setJobId(res.data.jobId);
         setStatus("queued");
       } catch (err: any) {
@@ -33,7 +47,7 @@ const RunJob: React.FC = () => {
     };
 
     startJob();
-  }, [id]);
+  }, [datasetId, policyId]);
 
   useEffect(() => {
     if (!jobId) return;
@@ -41,12 +55,19 @@ const RunJob: React.FC = () => {
 
     const poll = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/jobs/${jobId}`, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } });
+        const res = await axios.get(`${API_URL}/api/jobs/${jobId}`, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+        });
+
         if (cancelled) return;
+
         setStatus(res.data.status);
         setMessage(res.data.message || "");
+
         if (res.data.preview) setPreview(res.data.preview);
+
         if (res.data.status === "completed" || res.data.status === "failed") return;
+
         setTimeout(() => { if (!cancelled) poll(); }, 2000);
       } catch (err) {
         console.error(err);
@@ -87,9 +108,14 @@ const RunJob: React.FC = () => {
     <div className="min-h-screen bg-slate-50">
       <Header />
       <main className="max-w-4xl mx-auto p-6">
+
         <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
           <h1 className="text-2xl font-bold mb-2">Run Anonymization Job</h1>
-          <p className="text-slate-600 mb-4">Policy ID: {id}</p>
+
+          <p className="text-slate-600 mb-4">
+            Dataset ID: {datasetId} <br />
+            Policy ID: {policyId || "N/A"}
+          </p>
 
           <div className="mb-4">
             <p>Status: <strong>{status || "Starting..."}</strong></p>
@@ -103,23 +129,46 @@ const RunJob: React.FC = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      {preview[0] && Object.keys(preview[0]).map((h) => <th key={h} className="px-3 py-2 text-left text-sm">{h}</th>)}
+                      {preview[0] && Object.keys(preview[0]).map((h) => (
+                        <th key={h} className="px-3 py-2 text-left text-sm">{h}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {preview.map((r, i) => <tr key={i} className="border-t">{Object.keys(r).map((h) => <td key={h} className="px-3 py-2 text-sm">{String(r[h])}</td>)}</tr>)}
+                    {preview.map((r, i) => (
+                      <tr key={i} className="border-t">
+                        {Object.keys(r).map((h) => (
+                          <td key={h} className="px-3 py-2 text-sm">{String(r[h])}</td>
+                        ))}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
 
-              <button onClick={downloadMasked} className="px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white">Download Masked Dataset</button>
+              <button
+                onClick={downloadMasked}
+                className="px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white"
+              >
+                Download Masked Dataset
+              </button>
             </>
           )}
 
-          {status === "failed" && <div className="text-red-600 bg-red-50 p-4 rounded-lg"><strong>Job failed:</strong> {message}</div>}
+          {status === "failed" && (
+            <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+              <strong>Job failed:</strong> {message}
+            </div>
+          )}
 
-          {(!status || status === "queued" || status === "running") && <div className="flex items-center gap-2 text-sm text-slate-500"><div className="animate-spin h-4 w-4 border-2 border-cyan-500 border-t-transparent rounded-full"></div>Job is processing. This page will update automatically.</div>}
+          {(!status || status === "queued" || status === "running") && (
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <div className="animate-spin h-4 w-4 border-2 border-cyan-500 border-t-transparent rounded-full"></div>
+              Job is processing. This page will update automatically.
+            </div>
+          )}
         </div>
+
       </main>
     </div>
   );
